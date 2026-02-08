@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useScroll, useTransform, useSpring, motion, MotionValue } from 'framer-motion';
+import { useScroll, useTransform, motion, MotionValue } from 'framer-motion';
 import { MainStatsGraph, UserStatsCard, SecurityCard, RevenueCard, GlobeCard, AnalyticsCard } from './Dashboard';
 import { CheckCircle2, Globe, Shield } from 'lucide-react';
 
@@ -140,7 +140,8 @@ export const Hero = () => {
                                 y: graphY,
                                 opacity: graphOpacity,
                                 rotateY: graphRotateY,
-                                zIndex: 20
+                                zIndex: 20,
+                                willChange: 'transform'
                             }}
                             className="shadow-[0_20px_50px_-12px_rgba(59,130,246,0.15)] border-blue-100/50"
                         />
@@ -156,7 +157,8 @@ export const Hero = () => {
                                 opacity: securityOpacity,
                                 scale: securityScale,
                                 rotateY: securityRotateY,
-                                zIndex: 30
+                                zIndex: 30,
+                                willChange: 'transform'
                             }}
                             className="shadow-[0_20px_50px_-12px_rgba(16,185,129,0.15)] border-green-100/50"
                         />
@@ -172,7 +174,8 @@ export const Hero = () => {
                                 opacity: globeOpacity,
                                 scale: globeScale,
                                 rotateY: globeRotateY,
-                                zIndex: 30
+                                zIndex: 30,
+                                willChange: 'transform'
                             }}
                             className="shadow-[0_20px_50px_-12px_rgba(99,102,241,0.15)] border-indigo-100/50"
                         />
