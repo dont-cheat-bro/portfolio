@@ -10,126 +10,87 @@ export const Hero = () => {
         offset: ["start start", "end end"]
     });
 
-    const smoothProgress = useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001
-    });
-
-    // --- Animation Strategy: Grid to Zig-Zag ---
-    // Start (0.0): All modules form a cohesive dashboard grid.
-    // Scroll (0.15+): Modules break free ("explode") and move to their Story positions.
+    // --- Animation Strategy: Direct 1:1 Response ---
+    // Removed useSpring to eliminate "floaty/laggy" feeling.
+    // Lenis handles the smoothing of the scroll container itself.
 
     const useParallax = (value: MotionValue<number>, distance: number) => {
         return useTransform(value, [0, 1], [0, distance]);
     };
 
     // --- 1. Main Graph (Left Dock) ---
-    // Grid Pos: Top-Left (0,0). Width: 50%. Height: 66%.
-    // Story Pos: Left, slightly down.
-    const graphX = useTransform(smoothProgress,
+    const graphX = useTransform(scrollYProgress,
         [0.15, 0.25, 0.45, 0.55],
-        ["0%", "0%", "0%", "-100%"] // Stays Left then exits
+        ["0%", "0%", "0%", "-100%"]
     );
-    const graphY = useTransform(smoothProgress,
+    const graphY = useTransform(scrollYProgress,
         [0.15, 0.25, 0.45, 0.55],
-        ["0%", "20%", "20%", "20%"] // Moves down 20%
+        ["0%", "20%", "20%", "20%"]
     );
-    const graphOpacity = useTransform(smoothProgress,
+    const graphOpacity = useTransform(scrollYProgress,
         [0, 0.15, 0.25, 0.45, 0.55],
-        [0.2, 1, 1, 1, 0] // Start dim, fade in, then fade out
+        [0.2, 1, 1, 1, 0]
     );
-    const graphRotateY = useTransform(smoothProgress, [0.15, 0.25], [0, 5]);
-
+    const graphRotateY = useTransform(scrollYProgress, [0.15, 0.25], [0, 5]);
 
     // --- 2. Security Card (Right Dock) ---
-    // Grid Pos: Top-Right (left: 75%). Width: 25%.
-    // Story Pos: Right docking.
-    // Movement: Needs to stay on Right. Maybe drop down.
-
-    // Custom logic for Security:
-    // 0-0.15: Grid (Visible).
-    // 0.15-0.45: Graph Focus (HIDDEN).
-    // 0.45-0.55: Entrance to Dock.
-    // 0.55-0.75: Security Focus (Visible).
-    // 0.75+: Exit.
-    const securityX_Complex = useTransform(smoothProgress,
+    const securityX_Complex = useTransform(scrollYProgress,
         [0, 0.15, 0.45, 0.55, 0.75, 0.85],
         ["0%", "50%", "50%", "-50%", "-50%", "150%"]
     );
-    const securityY_Complex = useTransform(smoothProgress,
+    const securityY_Complex = useTransform(scrollYProgress,
         [0, 0.15, 0.45, 0.55, 0.75],
         ["0%", "-50%", "-50%", "120%", "120%"]
     );
-    // STRICT OPACITY CONTROL
-    const securityOpacity = useTransform(smoothProgress,
+    const securityOpacity = useTransform(scrollYProgress,
         [0, 0.15, 0.25, 0.45, 0.55, 0.75, 0.85],
-        [0.2, 1, 0, 0, 1, 1, 0] // Start dim
-        // 0-0.15: Visible (Grid)
-        // 0.25-0.45: Hidden (Graph viewing)
-        // 0.55-0.75: Visible (Security viewing)
-        // 0.85+: Hidden (Globe viewing)
+        [0.2, 1, 0, 0, 1, 1, 0]
     );
-    const securityRotateY = useTransform(smoothProgress, [0.45, 0.55], [0, -15]);
-    const securityScale = useTransform(smoothProgress, [0.45, 0.55], [1, 1.3]);
-
+    const securityRotateY = useTransform(scrollYProgress, [0.45, 0.55], [0, -15]);
+    const securityScale = useTransform(scrollYProgress, [0.45, 0.55], [1, 1.3]);
 
     // --- 3. Globe Card "Uptime" (Left Dock) ---
-    // Grid Pos: Bottom-Middle (Left: 50%, Top: 67%). Width: 25%.
-    // Story Pos: Left docking. Needs to be centered vertically. 
-    // Fix: User says "too far left". Move Right.
-    // Was -200%. Changed to -160%.
-    const globeX = useTransform(smoothProgress,
+    const globeX = useTransform(scrollYProgress,
         [0, 0.75, 0.85, 1],
         ["0%", "0%", "-160%", "-160%"]
     );
-    const globeY = useTransform(smoothProgress,
+    const globeY = useTransform(scrollYProgress,
         [0, 0.75, 0.85],
-        ["0%", "0%", "-110%"] // Move UP to center vertically (-110%)
+        ["0%", "0%", "-110%"]
     );
-    // STRICT OPACITY CONTROL
-    const globeOpacity = useTransform(smoothProgress,
+    const globeOpacity = useTransform(scrollYProgress,
         [0, 0.15, 0.25, 0.75, 0.85],
-        [0.2, 1, 0, 0, 1] // Start dim
-        // 0-0.15: Visible (Grid)
-        // 0.25-0.75: Hidden (Graph & Security viewing)
-        // 0.85+: Visible (Globe viewing)
+        [0.2, 1, 0, 0, 1]
     );
-    const globeScale = useTransform(smoothProgress, [0.75, 0.85], [1, 1.3]);
-    const globeRotateY = useTransform(smoothProgress, [0.85, 1], [0, 15]);
-
+    const globeScale = useTransform(scrollYProgress, [0.75, 0.85], [1, 1.3]);
+    const globeRotateY = useTransform(scrollYProgress, [0.85, 1], [0, 15]);
 
     // --- Background Modules ---
-    // Start dim (0.2), fade in to 1 at 0.15, then fade out
-    const bgOpacity = useTransform(smoothProgress, [0, 0.15, 0.25], [0.2, 1, 0.1]);
+    const bgOpacity = useTransform(scrollYProgress, [0, 0.15, 0.25], [0.2, 1, 0.1]);
 
-    const scatter1X = useParallax(smoothProgress, -200);
-    const scatter1Y = useParallax(smoothProgress, -100);
-    const scatter2X = useParallax(smoothProgress, 200);
-    const scatter2Y = useParallax(smoothProgress, -100);
-    const scatter3X = useParallax(smoothProgress, -200);
-    const scatter3Y = useParallax(smoothProgress, 200);
+    const scatter1X = useParallax(scrollYProgress, -200);
+    const scatter1Y = useParallax(scrollYProgress, -100);
+    const scatter2X = useParallax(scrollYProgress, 200);
+    const scatter2Y = useParallax(scrollYProgress, -100);
+    const scatter3X = useParallax(scrollYProgress, -200);
+    const scatter3Y = useParallax(scrollYProgress, 200);
 
-    const containerScale = useTransform(smoothProgress, [0, 0.2], [1, 1.1]);
+    const containerScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.1]);
 
     // --- Intro Text Animation ---
-    const introOpacity = useTransform(smoothProgress, [0, 0.15], [1, 0]);
-    const introScale = useTransform(smoothProgress, [0, 0.15], [1, 0.8]);
-    const introY = useTransform(smoothProgress, [0, 0.15], [0, -50]);
+    const introOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+    const introScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.8]);
+    const introY = useTransform(scrollYProgress, [0, 0.15], [0, -50]);
 
     // --- Feature Text Animations ---
+    const text1Opacity = useTransform(scrollYProgress, [0.20, 0.30, 0.40], [0, 1, 0]);
+    const text1Y = useTransform(scrollYProgress, [0.20, 0.30, 0.40], [50, 0, -50]);
 
-    // Text 1 (Right Side)
-    const text1Opacity = useTransform(smoothProgress, [0.20, 0.30, 0.40], [0, 1, 0]);
-    const text1Y = useTransform(smoothProgress, [0.20, 0.30, 0.40], [50, 0, -50]);
+    const text2Opacity = useTransform(scrollYProgress, [0.50, 0.60, 0.70], [0, 1, 0]);
+    const text2Y = useTransform(scrollYProgress, [0.50, 0.60, 0.70], [50, 0, -50]);
 
-    // Text 2 (Left Side) - Security
-    const text2Opacity = useTransform(smoothProgress, [0.50, 0.60, 0.70], [0, 1, 0]);
-    const text2Y = useTransform(smoothProgress, [0.50, 0.60, 0.70], [50, 0, -50]);
-
-    // Text 3 (Right Side) - Globe
-    const text3Opacity = useTransform(smoothProgress, [0.80, 0.90, 1], [0, 1, 1]);
-    const text3Y = useTransform(smoothProgress, [0.80, 0.90, 1], [50, 0, 0]);
+    const text3Opacity = useTransform(scrollYProgress, [0.80, 0.90, 1], [0, 1, 1]);
+    const text3Y = useTransform(scrollYProgress, [0.80, 0.90, 1], [50, 0, 0]);
 
 
     return (
